@@ -1,0 +1,12 @@
+---
+
+postgres_img: "postgres"
+postgres_ver: "17.2"
+postgres_container: "tourplanerDB"
+postgres_port: 5432
+postgres_volume: "tourplanerVolume"
+
+# db creds
+postgres_user: "postgres"
+postgres_pwd: "testpwd"
+postgres_db: "tourplaner"
