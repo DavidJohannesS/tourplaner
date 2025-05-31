@@ -17,4 +17,5 @@ public class TourEntryDTO {
     private String time;
     private String rating;
     private Date dateTime;
+    private String searchVector;
 }

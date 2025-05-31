@@ -65,4 +65,11 @@ public class TourService {
         
         return tourMapper.toDto(updatedTour);
     }
+    public List<TourDTO> searchTours(String query) {
+    return tourRepo.searchTours(query)
+                   .stream()
+                   .map(tourMapper::toDto)
+                   .toList();
+}
+
 }

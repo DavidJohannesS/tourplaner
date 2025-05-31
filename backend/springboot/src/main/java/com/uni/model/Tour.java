@@ -16,6 +16,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 @Data
 @AllArgsConstructor
@@ -41,4 +43,15 @@ public class Tour
     
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
     private List<TourEntry> tourEntries = new ArrayList<>();
+    @Column(name = "search_vector", columnDefinition = "tsvector")
+    @org.hibernate.annotations.ColumnTransformer(
+        write = "to_tsvector('english', ?)",
+        read = "search_vector"
+    )
+    private String searchVector;
+    @PrePersist
+    @PreUpdate
+    public void generateSearchVector() {
+        this.searchVector = name + " " + description + " " + fromLocation + " " + toLocation;
+    }
 }

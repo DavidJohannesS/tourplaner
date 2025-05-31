@@ -16,7 +16,8 @@ public class TourEntryMapper {
             entry.getDistance(),
             entry.getTime(),
             entry.getRating(),
-            entry.getDateTime()
+            entry.getDateTime(),
+            entry.getSearchVector()
         );
     }
 
@@ -29,7 +30,8 @@ public class TourEntryMapper {
             entryDTO.getTime(),
             entryDTO.getRating(),
             entryDTO.getDateTime(),
-            null
+            null,
+            entryDTO.getSearchVector()
         );
     }
 }

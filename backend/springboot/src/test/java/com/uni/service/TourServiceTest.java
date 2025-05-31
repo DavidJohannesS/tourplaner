@@ -1,8 +1,9 @@
 package com.uni.service;
 
+import java.util.ArrayList;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.List;
 import com.uni.dto.TourDTO;
 import com.uni.mapper.TourMapper;
 import com.uni.model.Tour;
@@ -184,5 +185,19 @@ public class TourServiceTest {
         verify(tourRepo).delete(savedTourEntity);
     }
 
+    @Test
+    public void testSearchTours() {
+        // Arrange: Provide two matching tour objects.
+        List<Tour> mockTours = List.of(
+            new Tour(1L, "Test Tour", "A sample tour", "Start", "End", "Hiking", "10", "2", null, new ArrayList<>(), "test tour start end hiking"),
+            new Tour(2L, "Test Tour 2", "Another sample tour", "Start", "Destination", "Biking", "15", "3", null, new ArrayList<>(), "test tour2 start destination biking")
+        );
+        when(tourRepo.searchTours("test")).thenReturn(mockTours);
+        // Act:
+        List<TourDTO> result = tourService.searchTours("test");
+        // Assert: Now expect two entries.
+        assertEquals(2, result.size());
+        verify(tourRepo).searchTours("test");
+    }
 }
 

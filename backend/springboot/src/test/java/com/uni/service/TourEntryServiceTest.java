@@ -2,7 +2,7 @@ package com.uni.service;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.List;
 import com.uni.dto.TourEntryDTO;
 import com.uni.mapper.TourEntryMapper;
 import com.uni.model.Tour;
@@ -164,5 +164,39 @@ public class TourEntryServiceTest {
 
         verify(tourEntryRepository).findById(1L);
         verify(tourEntryRepository).delete(savedEntryEntity);
+    }
+
+    @Test
+    public void testSearchEntries() {
+        TourEntry matchingEntry = new TourEntry();
+        matchingEntry.setId(1L);
+        matchingEntry.setComment("Amazing view!");
+        matchingEntry.setDifficulty("Medium");
+        matchingEntry.setDistance("15");
+        matchingEntry.setTime("3");
+        matchingEntry.setRating("5");
+        matchingEntry.setTour(sampleTour);
+        matchingEntry.setSearchVector("amazing view medium difficulty");
+
+        List<TourEntry> mockEntries = List.of(matchingEntry);
+        when(tourEntryRepository.searchEntries("amazing")).thenReturn(mockEntries);
+
+        TourEntryDTO matchingDTO = new TourEntryDTO();
+        matchingDTO.setId(1L);
+        matchingDTO.setComment("Amazing view!");
+        matchingDTO.setDifficulty("Medium");
+        matchingDTO.setDistance("15");
+        matchingDTO.setTime("3");
+        matchingDTO.setRating("5");
+        matchingDTO.setDateTime(null);
+
+        when(tourEntryMapper.toDto(matchingEntry)).thenReturn(matchingDTO);
+
+        List<TourEntryDTO> result = tourEntryService.searchEntries("amazing");
+
+        assertEquals(1, result.size());
+        assertEquals("Amazing view!", result.get(0).getComment());
+
+        verify(tourEntryRepository).searchEntries("amazing");
     }
 }

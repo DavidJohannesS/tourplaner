@@ -27,8 +27,8 @@ public class TourEntryController {
     @GetMapping("/{id}")
     public ResponseEntity<TourEntryDTO> getEntryById(@PathVariable Long id) {
         return tourEntryService.getEntryById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -47,4 +47,9 @@ public class TourEntryController {
         tourEntryService.deleteEntry(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/search")
+    public List<TourEntryDTO> searchEntries(@RequestParam String query) {
+        return tourEntryService.searchEntries(query);
+    }
+
 }

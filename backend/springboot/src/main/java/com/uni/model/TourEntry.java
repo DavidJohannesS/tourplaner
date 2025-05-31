@@ -29,4 +29,16 @@ public class TourEntry
     @ManyToOne
     @JoinColumn(name = "tour_id")
     private Tour tour;
+        @Column(name = "search_vector", columnDefinition = "tsvector")
+    @org.hibernate.annotations.ColumnTransformer(
+        write = "to_tsvector('english', ?)",
+        read = "search_vector"
+    )
+    private String searchVector;
+
+    @PrePersist
+    @PreUpdate
+    public void generateSearchVector() {
+        this.searchVector = comment + " " + difficulty + " " + distance + " " + time + " " + rating;
+    }
 }

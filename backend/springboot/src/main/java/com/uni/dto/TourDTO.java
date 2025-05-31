@@ -20,4 +20,6 @@ public class TourDTO
     private String distance;
     private String estimatedTime;
     private List<TourEntryDTO> tourEntries;
+    private String searchVector;
+
 }

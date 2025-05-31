@@ -28,7 +28,8 @@ public class TourMapper
             tour.getTourEntries()
                 .stream()
                 .map(entry -> tourEntryMapper.toDto(entry))
-                .toList()
+                .toList(),
+            tour.getSearchVector()
         );
     }
 
@@ -46,7 +47,8 @@ public class TourMapper
             tourDTO.getTourEntries()
                 .stream()
                 .map(tourEntryMapper::toEntity)
-                .toList()
+                .toList(),
+            tourDTO.getSearchVector()
         );
     }
 }
