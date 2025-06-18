@@ -26,7 +26,7 @@ sudo dnf install -y python3-psycopg2
 Role Variables
 --------------
 
-image name, version as well db user,pwd and db name are set in var/main.yml
+image name, version as well db user,pwd and db name are set in vars/main.yml
 
 Usage
 -----
