@@ -36,5 +36,5 @@
         delay: 10
         timeout: 300
 
-    - name: Create tables
-      ansible.builtin.include_tasks: create_tables.yml
+#    - name: Create tables
+#      ansible.builtin.include_tasks: create_tables.yml

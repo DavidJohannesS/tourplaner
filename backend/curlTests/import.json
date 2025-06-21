@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Test Tour",
+    "description": "This is a test route.",
+    "fromLocation": "Start",
+    "toLocation": "End",
+    "transportType": "Train",
+    "distance": "123",
+    "estimatedTime": "9",
+    "tourEntries": []
+  }
+]
