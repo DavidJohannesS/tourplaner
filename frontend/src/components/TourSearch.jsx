@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-export default function Sidebar({ onSearch, onSaveTour, searchedTour, savedTours }) {
+const API_BASE = "http://localhost:8080/api/tours";
+
+export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [expandedTourId, setExpandedTourId] = useState(null);
+  const [savedTours, setSavedTours] = useState([]);
+
+  useEffect(() => {
+    async function loadTours() {
+      try {
+        const res = await axios.get(API_BASE);
+        setSavedTours(res.data);
+      } catch (e) {
+        console.error("Fehler beim Laden der Touren:", e);
+      }
+    }
+    loadTours();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,30 +30,37 @@ export default function Sidebar({ onSearch, onSaveTour, searchedTour, savedTours
     }
   };
 
-  const handleSave = () => {
+  const isTourAlreadySaved = () =>
+    savedTours.some(
+      (t) =>
+        t.fromLocation.toLowerCase() === searchedTour?.start.toLowerCase() &&
+        t.toLocation.toLowerCase() === searchedTour?.end.toLowerCase()
+    );
+
+  const handleSave = async () => {
     if (!searchedTour || !name || !description) return;
 
-    const newTour = {
-      id: crypto.randomUUID(),
+    const newTourDTO = {
+      id: 0, // Wird vom Backend ignoriert / überschrieben
       name,
       description,
-      start: searchedTour.start,
-      end: searchedTour.end,
-      distance: searchedTour.distance,
-      estimatedTime: searchedTour.estimatedTime,
+      fromLocation: searchedTour.start,
+      toLocation: searchedTour.end,
+      transportType: "foot-walking",
+      distance: String(searchedTour.distance),
+      estimatedTime: String(searchedTour.estimatedTime),
+      tourEntries: [],
+      searchVector: "", // wird serverseitig generiert/verwendet
     };
 
-    onSaveTour(newTour);
-    setName("");
-    setDescription("");
-  };
-
-  const isTourAlreadySaved = () => {
-    return savedTours.some(
-      (tour) =>
-        tour.start.toLowerCase() === searchedTour?.start.toLowerCase() &&
-        tour.end.toLowerCase() === searchedTour?.end.toLowerCase()
-    );
+    try {
+      const res = await axios.post(API_BASE, newTourDTO);
+      setSavedTours((prev) => [...prev, res.data]);
+      setName("");
+      setDescription("");
+    } catch (e) {
+      console.error("Fehler beim Speichern:", e);
+    }
   };
 
   return (
@@ -72,7 +95,6 @@ export default function Sidebar({ onSearch, onSaveTour, searchedTour, savedTours
         </button>
       </form>
 
-      {/* Neue Route speichern */}
       {!isTourAlreadySaved() && searchedTour && (
         <div className="mt-6 border-t pt-4">
           <h3 className="font-semibold mb-2">Neue Route speichern</h3>
@@ -103,18 +125,18 @@ export default function Sidebar({ onSearch, onSaveTour, searchedTour, savedTours
         </div>
       )}
 
-      {/* Gespeicherte Touren */}
       <div className="mt-6 border-t pt-4">
         <h3 className="font-semibold mb-2">Gespeicherte Touren</h3>
         {savedTours.map((tour) => (
           <div key={tour.id} className="mb-2 border rounded">
             <button
               className="w-full text-left p-2 bg-gray-100 hover:bg-gray-200"
-              onClick={() =>
+              onClick={() => {
                 setExpandedTourId((prev) =>
                   prev === tour.id ? null : tour.id
-                )
-              }
+                );
+                onSelectTour(tour); 
+              }}
             >
               <div className="font-medium">{tour.name}</div>
               <div className="text-sm text-gray-600">
@@ -123,10 +145,18 @@ export default function Sidebar({ onSearch, onSaveTour, searchedTour, savedTours
             </button>
             {expandedTourId === tour.id && (
               <div className="p-2 text-sm text-gray-700 bg-white border-t">
-                <p><strong>Beschreibung:</strong> {tour.description}</p>
-                <p><strong>Start:</strong> {tour.start}</p>
-                <p><strong>Ziel:</strong> {tour.end}</p>
-                <p><strong>Distanz:</strong> {tour.distance} km</p>
+                <p>
+                  <strong>Beschreibung:</strong> {tour.description}
+                </p>
+                <p>
+                  <strong>Start:</strong> {tour.fromLocation}
+                </p>
+                <p>
+                  <strong>Ziel:</strong> {tour.toLocation}
+                </p>
+                <p>
+                  <strong>Distanz:</strong> {tour.distance} km
+                </p>
               </div>
             )}
           </div>

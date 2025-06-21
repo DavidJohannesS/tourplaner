@@ -5,6 +5,7 @@ import { fetchRoute } from "./api/FetchRoute";
 import axios from "axios";
 import Sidebar from "./components/TourSearch";
 import MapView from "./components/MapView";
+import TourEntries from "./components/TourEntries";
 
 const API_KEY = "5b3ce3597851110001cf62480ed1a13c708c4cd1a7e2ed747a4b49e1"; // Replace with your real API key
 
@@ -12,6 +13,7 @@ function App() {
   const [routeCoords, setRouteCoords] = useState([]);
   const [savedTours, setSavedTours] = useState([]);
   const [searchedTour, setSearchedTour] = useState(null);
+  const [selectedTour, setSelectedTour] = useState(null);
 
   const geocode = async (place) => {
     const response = await axios.get(
@@ -49,19 +51,35 @@ function App() {
     setSavedTours((prev) => [...prev, tour]);
   };
 
+  const handleCloseTourEntries = () => setSelectedTour(null);
+
+  const handleSelectTour = (tour) => {
+    console.log("Selected Tour:", tour); 
+    setSelectedTour(tour);
+  };
+
+
   return (
-    <div className="flex h-screen">
-      <Sidebar
-        onSearch={handleSearch}
-        onSaveTour={handleSaveTour}
-        searchedTour={searchedTour}
-        savedTours={savedTours}
-      />
-      <div className="flex-1">
-        <MapView routeCoords={routeCoords} />
-      </div>
+  <div className="flex h-screen">
+    <Sidebar
+      onSearch={handleSearch}
+      onSaveTour={handleSaveTour}
+      searchedTour={searchedTour}
+      savedTours={savedTours}
+      onSelectTour={handleSelectTour}
+    />
+    <div className="flex-1">
+      <MapView routeCoords={routeCoords} />
     </div>
-  );
+    {selectedTour && (
+      <TourEntries
+        selectedTour={selectedTour}
+        onClose={handleCloseTourEntries}
+      />
+    )}
+  </div>
+);
+
 }
 
 export default App;
