@@ -35,9 +35,3 @@
         port: "{{ postgres_port }}"
         delay: 10
         timeout: 300
-
-<<<<<<< HEAD
-=======
-#    - name: Create tables
-#      ansible.builtin.include_tasks: create_tables.yml
->>>>>>> 67d298878b52e3be27ed27e420981adc87719fca
