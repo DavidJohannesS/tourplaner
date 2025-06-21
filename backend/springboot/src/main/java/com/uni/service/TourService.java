@@ -3,22 +3,25 @@ package com.uni.service;
 import com.uni.dto.TourDTO;
 import com.uni.dto.TourEntryDTO;
 import com.uni.mapper.TourMapper;
+import com.uni.mapper.TourEntryMapper;
 import com.uni.model.Tour;
+import com.uni.model.TourEntry;
 import com.uni.repo.TourRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-
+import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TourService {
     private final TourRepo tourRepo;
     private final TourMapper tourMapper;
     private final TourEntryService tourEntryService;  // Inject the TourEntryService
-
-    public TourService(TourRepo tourRepo, TourMapper tourMapper, TourEntryService tourEntryService) {
+    private final TourEntryMapper tourEntryMapper;
+    public TourService(TourRepo tourRepo, TourMapper tourMapper, TourEntryService tourEntryService, TourEntryMapper tourEntryMapper) {
         this.tourRepo = tourRepo;
         this.tourMapper = tourMapper;
         this.tourEntryService = tourEntryService;
+        this.tourEntryMapper = tourEntryMapper;
     }
 
     public List<TourDTO> getAllTours() {
@@ -57,14 +60,20 @@ public class TourService {
         return tourMapper.toDto(tourRepo.save(tour));
     }
 
-    public TourDTO addEntryToTour(Long tourId, TourEntryDTO tourEntryDTO) {
-        tourEntryService.createEntry(tourId, tourEntryDTO);
-        
-        Tour updatedTour = tourRepo.findById(tourId)
-                .orElseThrow(() -> new EntityNotFoundException("Tour not found"));
-        
-        return tourMapper.toDto(updatedTour);
-    }
+  @Transactional
+  public TourDTO addEntryToTour(Long tourId, TourEntryDTO dto) {
+    Tour tour = tourRepo.findById(tourId)
+        .orElseThrow(() -> new EntityNotFoundException("…"));
+
+    TourEntry entry = tourEntryMapper.toEntity(dto);
+    entry.setTour(tour);
+    tour.getTourEntries().add(entry);
+
+    Tour saved = tourRepo.save(tour);
+
+    return tourMapper.toDto(saved);
+  }
+
     public List<TourDTO> searchTours(String query) {
     return tourRepo.searchTours(query)
                    .stream()
