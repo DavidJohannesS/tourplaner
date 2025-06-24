@@ -1,4 +1,4 @@
-import Navbar from "./components/NavBar"
+import Navbar from "./components/NavBar";
 import "tailwindcss";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
@@ -56,33 +56,33 @@ function App() {
   const handleCloseTourEntries = () => setSelectedTour(null);
 
   const handleSelectTour = (tour) => {
-    console.log("Selected Tour:", tour); 
+    console.log("Selected Tour:", tour);
     setSelectedTour(tour);
   };
-
 
   return (
     <div>
       <Navbar />
-  <div className="flex h-screen">
-    <Sidebar
-      onSearch={handleSearch}
-      onSaveTour={handleSaveTour}
-      searchedTour={searchedTour}
-      savedTours={savedTours}
-      onSelectTour={handleSelectTour}
-    />
-    <div className="flex-1">
-      <TourPreview routeCoords={routeCoords} tour={searchedTour} />
+      <div className="flex h-screen">
+        <Sidebar
+          onSearch={handleSearch}
+          onSaveTour={handleSaveTour}
+          searchedTour={searchedTour}
+          savedTours={savedTours}
+          onSelectTour={handleSelectTour}
+        />
+        <div className="flex-1">
+          <TourPreview routeCoords={routeCoords} tour={searchedTour} />
 
-    {selectedTour && (
-      <TourEntries
-        selectedTour={selectedTour}
-        onClose={handleCloseTourEntries}
-      />
-    )}
-  </div>
-);
-
+          {selectedTour && (
+            <TourEntries
+              selectedTour={selectedTour}
+              onClose={handleCloseTourEntries}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 export default App;

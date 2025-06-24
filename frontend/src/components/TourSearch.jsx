@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Trash2 } from "lucide-react"; //trash icon
 import axios from "axios";
 
 const API_BASE = "http://localhost:8080/api/tours";
@@ -10,6 +11,8 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
   const [description, setDescription] = useState("");
   const [expandedTourId, setExpandedTourId] = useState(null);
   const [savedTours, setSavedTours] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [tourToDelete, setTourToDelete] = useState(null);
 
   useEffect(() => {
     async function loadTours() {
@@ -27,6 +30,16 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
     e.preventDefault();
     if (start && end) {
       onSearch(start, end);
+    }
+  };
+
+  const handleDeleteTour = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/tours/${id}`);
+      setSavedTours((prev) => prev.filter((tour) => tour.id !== id));
+      setShowDeleteModal(false);
+    } catch (err) {
+      console.error("Fehler beim Löschen der Tour:", err);
     }
   };
 
@@ -128,14 +141,14 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
       <div className="mt-6 border-t pt-4">
         <h3 className="font-semibold mb-2">Gespeicherte Touren</h3>
         {savedTours.map((tour) => (
-          <div key={tour.id} className="mb-2 border rounded">
+          <div key={tour.id} className="mb-2 border rounded relative">
             <button
-              className="w-full text-left p-2 bg-gray-100 hover:bg-gray-200"
+              className="w-full text-left p-2 bg-gray-100 hover:bg-gray-200 pr-10"
               onClick={() => {
                 setExpandedTourId((prev) =>
                   prev === tour.id ? null : tour.id
                 );
-                onSelectTour(tour); 
+                onSelectTour(tour);
               }}
             >
               <div className="font-medium">{tour.name}</div>
@@ -143,6 +156,20 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
                 Zeit: {tour.estimatedTime} min
               </div>
             </button>
+
+            <button
+              onClick={() => {
+                // Schließe die tour entry
+                onSelectTour(null);
+
+                setTourToDelete(tour);
+                setShowDeleteModal(true);
+              }}
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+            >
+              <Trash2 size={18} />
+            </button>
+
             {expandedTourId === tour.id && (
               <div className="p-2 text-sm text-gray-700 bg-white border-t">
                 <p>
@@ -162,6 +189,31 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
           </div>
         ))}
       </div>
+      {showDeleteModal && tourToDelete && (
+        <div className="fixed inset-0 z-50 bg-gray-200 bg-opacity-80 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Tour löschen</h2>
+            <p>
+              Bist du sicher, dass du die Tour{" "}
+              <strong>{tourToDelete.name}</strong> löschen möchtest?
+            </p>
+            <div className="mt-6 flex justify-end space-x-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => handleDeleteTour(tourToDelete.id)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+              >
+                Löschen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
