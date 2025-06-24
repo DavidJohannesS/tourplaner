@@ -48,17 +48,26 @@ function App() {
       estimatedTime: durationMin,
     });
   };
+const handleSelectTour = async (tour) => {
+  console.log("Selected Tour:", tour);
+  setSelectedTour(tour);
 
-  const handleSaveTour = (tour) => {
+  try {
+    const startCoords = await geocode(tour.fromLocation);
+    const endCoords = await geocode(tour.toLocation);
+    const { routeCoords } = await fetchRoute(startCoords, endCoords);
+    setRouteCoords(routeCoords); // ← this updates the map
+  } catch (e) {
+    console.error("Fehler beim Laden der Route für gewählte Tour:", e);
+  }
+};  const handleSaveTour = (tour) => {
     setSavedTours((prev) => [...prev, tour]);
   };
 
   const handleCloseTourEntries = () => setSelectedTour(null);
-
-  const handleSelectTour = (tour) => {
-    console.log("Selected Tour:", tour);
-    setSelectedTour(tour);
-  };
+const handleUpdateTour = (updatedTour) => {
+  setSelectedTour({ ...updatedTour });  // Force a new object reference
+};
 
   return (
     <div>
@@ -72,8 +81,11 @@ function App() {
           onSelectTour={handleSelectTour}
         />
         <div className="flex-1">
-          <TourPreview routeCoords={routeCoords} tour={searchedTour} />
-
+<TourPreview
+  routeCoords={routeCoords}
+  tour={selectedTour || searchedTour}
+  onUpdateTour={handleUpdateTour}
+/>
           {selectedTour && (
             <TourEntries
               selectedTour={selectedTour}

@@ -12,4 +12,9 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/components/test/setup.js', // optional, if you use jest-dom or other setup
+  },
 });
