@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MapView from "./MapView";
 import { updateTour } from "../api/tours"; // make sure this is set up
 import { useDarkMode } from "../context/DarkModeContext";
@@ -8,6 +8,13 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ ...tour });
   const { darkMode } = useDarkMode();
+
+  useEffect(() => {
+    if (tour) {
+      setFormData({ ...tour });
+      setEditMode(false);
+    }
+  }, [tour]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,8 +49,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
         {editMode ? (
           <form className="space-y-4">
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Name</label>
+              <label htmlFor="name" className="text-sm font-medium mb-1">Name</label>
               <input
+                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
@@ -52,8 +60,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Beschreibung</label>
+              <label htmlFor="description" className="text-sm font-medium mb-1">Beschreibung</label>
               <textarea
+                id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
@@ -62,8 +71,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Startpunkt</label>
+              <label htmlFor="fromLocation" className="text-sm font-medium mb-1">Startpunkt</label>
               <input
+                id="fromLocation"
                 name="fromLocation"
                 value={formData.fromLocation}
                 onChange={handleChange}
@@ -72,8 +82,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Zielpunkt</label>
+              <label htmlFor="toLocation" className="text-sm font-medium mb-1">Zielpunkt</label>
               <input
+                id="toLocation"
                 name="toLocation"
                 value={formData.toLocation}
                 onChange={handleChange}
@@ -82,8 +93,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Verkehrsmittel</label>
+              <label htmlFor="transportType" className="text-sm font-medium mb-1">Verkehrsmittel</label>
               <input
+                id="transportType"
                 name="transportType"
                 value={formData.transportType}
                 onChange={handleChange}
@@ -93,8 +105,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Distanz (km)</label>
+                <label htmlFor="distance" className="text-sm font-medium mb-1">Distanz (km)</label>
                 <input
+                  id="distance"
                   name="distance"
                   type="number"
                   value={formData.distance}
@@ -104,8 +117,9 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
               </div>
 
               <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Dauer (min)</label>
+                <label htmlFor="estimatedTime" className="text-sm font-medium mb-1">Dauer (min)</label>
                 <input
+                  id="estimatedTime"
                   name="estimatedTime"
                   type="number"
                   value={formData.estimatedTime}
