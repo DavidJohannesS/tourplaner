@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react"; //trash icon
 import axios from "axios";
+import { useDarkMode } from "../context/DarkModeContext";
+import classNames from "classnames";
 
 const API_BASE = "http://localhost:8080/api/tours";
 
@@ -13,6 +15,7 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
   const [savedTours, setSavedTours] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [tourToDelete, setTourToDelete] = useState(null);
+  const { darkMode } = useDarkMode();
 
   useEffect(() => {
     async function loadTours() {
@@ -77,7 +80,15 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
   };
 
   return (
-    <div className="w-80 bg-white shadow-md p-4 flex flex-col overflow-y-auto">
+    <div
+      className={classNames(
+        "w-80 shadow-md p-4 flex flex-col overflow-y-auto",
+        {
+          "bg-white text-black": !darkMode,
+          "dark:bg-gray-700 dark:text-white": darkMode,
+        }
+      )}
+    >
       <h2 className="text-xl font-semibold mb-4">Tour suchen</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
@@ -102,7 +113,10 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
         </div>
         <button
           type="submit"
-          className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700"
+          className={classNames("rounded p-2", {
+            "bg-blue-600 text-white hover:bg-blue-700": !darkMode,
+            "dark:bg-gray-800 dark:hover:bg-gray-600": darkMode,
+          })}
         >
           Route suchen
         </button>
@@ -143,7 +157,11 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
         {savedTours.map((tour) => (
           <div key={tour.id} className="mb-2 border rounded relative">
             <button
-              className="w-full text-left p-2 bg-gray-100 hover:bg-gray-200 pr-10"
+              className={classNames("w-full text-left p-2 pr-10", {
+                "bg-gray-100 text-black hover:bg-gray-200": !darkMode,
+                "dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500":
+                  darkMode,
+              })}
               onClick={() => {
                 setExpandedTourId((prev) =>
                   prev === tour.id ? null : tour.id
@@ -152,7 +170,12 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
               }}
             >
               <div className="font-medium">{tour.name}</div>
-              <div className="text-sm text-gray-600">
+              <div
+                className={classNames("text-sm", {
+                  "text-gray-600": !darkMode,
+                  "dark:text-black": darkMode,
+                })}
+              >
                 Zeit: {tour.estimatedTime} min
               </div>
             </button>
@@ -165,13 +188,21 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
                 setTourToDelete(tour);
                 setShowDeleteModal(true);
               }}
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+              className={classNames("absolute top-2 right-2", {
+                "text-gray-500 hover:text-red-600": !darkMode,
+                "dark:text-black hover:text-red-600": darkMode,
+              })}
             >
               <Trash2 size={18} />
             </button>
 
             {expandedTourId === tour.id && (
-              <div className="p-2 text-sm text-gray-700 bg-white border-t">
+              <div
+                className={classNames("p-2 text-sm border-t", {
+                  "bg-white text-gray-700": !darkMode,
+                  "dark:bg-gray-500 dark:text-black": darkMode,
+                })}
+              >
                 <p>
                   <strong>Beschreibung:</strong> {tour.description}
                 </p>
@@ -190,8 +221,21 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
         ))}
       </div>
       {showDeleteModal && tourToDelete && (
-        <div className="fixed inset-0 z-50 bg-gray-200 bg-opacity-80 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div
+          className={classNames(
+            "fixed inset-0 z-50 bg-opacity-80 backdrop-blur-sm flex items-center justify-center",
+            {
+              "bg-gray-200 text-black": !darkMode,
+              "dark:bg-gray-500 dark:text-black": darkMode,
+            }
+          )}
+        >
+          <div
+            className={classNames("p-6 rounded-lg shadow-lg w-96", {
+              "bg-white": !darkMode,
+              "dark:bg-gray-600": darkMode,
+            })}
+          >
             <h2 className="text-xl font-semibold mb-4">Tour löschen</h2>
             <p>
               Bist du sicher, dass du die Tour{" "}

@@ -1,7 +1,11 @@
 import React from "react";
+import classNames from "classnames";
 import axios from "axios";
+import { useDarkMode } from "../context/DarkModeContext";
 
 export default function Navbar() {
+  const { darkMode, setDarkMode } = useDarkMode();
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -42,14 +46,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
-      {/* Left: Site name that refreshes the page */}
+    <nav
+      className={classNames("flex justify-between items-center p-4", {
+        "bg-blue-300 text-black": !darkMode,
+        "bg-gray-800 text-white": darkMode,
+      })}
+    >
+      {/* Left: Site name */}
       <a href="/" className="text-xl font-bold">
         Tourplaner
       </a>
 
-      {/* Right: Import and Export buttons */}
-      <div>
+      {/* Right: Import, Export, and DarkMode Switch */}
+      <div className="flex items-center gap-2">
         <label className="mr-2 cursor-pointer bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">
           Import
           <input
@@ -65,6 +74,21 @@ export default function Navbar() {
         >
           Export
         </button>
+        <label className="flex items-center cursor-pointer ml-4">
+          <input
+            type="checkbox"
+            checked={darkMode}
+            onChange={() => setDarkMode(!darkMode)}
+            className="hidden"
+          />
+          <div className="w-10 h-5 bg-gray-400 rounded-full p-1 flex items-center dark:bg-gray-700">
+            <div
+              className={`bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out ${
+                darkMode ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </div>
+        </label>
       </div>
     </nav>
   );

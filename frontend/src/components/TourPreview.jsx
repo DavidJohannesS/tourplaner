@@ -1,11 +1,13 @@
-
 import { useState } from "react";
 import MapView from "./MapView";
 import { updateTour } from "../api/tours"; // make sure this is set up
+import { useDarkMode } from "../context/DarkModeContext";
+import classNames from "classnames";
 
 export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ ...tour });
+  const { darkMode } = useDarkMode();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +24,8 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
     }
   };
 
-  if (!tour) return <div className="p-4 text-gray-600">Noch keine Route geladen.</div>;
+  if (!tour)
+    return <div className="p-4 text-gray-600">Noch keine Route geladen.</div>;
 
   return (
     <div className="flex flex-col h-full">
@@ -30,7 +33,12 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
         <MapView routeCoords={routeCoords} />
       </div>
 
-      <div className="p-4 bg-white shadow h-1/2 overflow-y-auto">
+      <div
+        className={classNames("p-4  shadow h-1/2 overflow-y-auto", {
+          "bg-white": !darkMode,
+          "dark:bg-gray-600": darkMode,
+        })}
+      >
         {editMode ? (
           <form className="space-y-4">
             <div className="flex flex-col">
@@ -128,11 +136,21 @@ export default function TourPreview({ routeCoords, tour, onUpdateTour }) {
               Bearbeiten ✏️
             </button>
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <p><strong>Start:</strong> {tour.fromLocation}</p>
-              <p><strong>Ziel:</strong> {tour.toLocation}</p>
-              <p><strong>Verkehrsmittel:</strong> {tour.transportType}</p>
-              <p><strong>Distanz:</strong> {tour.distance} km</p>
-              <p><strong>Dauer:</strong> {tour.estimatedTime} min</p>
+              <p>
+                <strong>Start:</strong> {tour.fromLocation}
+              </p>
+              <p>
+                <strong>Ziel:</strong> {tour.toLocation}
+              </p>
+              <p>
+                <strong>Verkehrsmittel:</strong> {tour.transportType}
+              </p>
+              <p>
+                <strong>Distanz:</strong> {tour.distance} km
+              </p>
+              <p>
+                <strong>Dauer:</strong> {tour.estimatedTime} min
+              </p>
             </div>
           </>
         )}

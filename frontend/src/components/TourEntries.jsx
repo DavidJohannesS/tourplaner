@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Pencil } from "lucide-react";
+import { useDarkMode } from "../context/DarkModeContext";
 import axios from "axios";
+import classNames from "classnames";
 
 const API_BASE = "http://localhost:8080/api";
 
@@ -20,6 +22,8 @@ export default function TourEntries({ selectedTour, onClose }) {
     time: "",
     rating: 0,
   });
+
+  const { darkMode } = useDarkMode();
 
   useEffect(() => {
     if (!selectedTour) return;
@@ -60,7 +64,7 @@ export default function TourEntries({ selectedTour, onClose }) {
     }
   };
 
-  const handleAddEntry = async () => {
+  const handleAddOrUpdateEntry = async () => {
     const entryData = {
       comment: newEntry.comment,
       difficulty: newEntry.difficulty,
@@ -121,13 +125,21 @@ export default function TourEntries({ selectedTour, onClose }) {
       rating: entry.rating,
     });
     setEditingEntryId(entry.id);
-    setShowForm(true); // assuming you toggle the form with this
+    setShowForm(true);
   };
 
   if (!selectedTour) return null;
 
   return (
-    <div className="fixed right-0 top-16 h-[calc(100%-4rem)] w-96 bg-white shadow-lg p-4 border-l z-50 overflow-y-auto">
+    <div
+      className={classNames(
+        "fixed right-0 top-16 h-[calc(100%-4rem)] w-96 shadow-lg p-4 border-l z-50 overflow-y-auto",
+        {
+          "bg-white text-black": !darkMode,
+          "bg-gray-700 text-white": darkMode,
+        }
+      )}
+    >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">
           Tour Logs: {selectedTour.name}
@@ -148,7 +160,12 @@ export default function TourEntries({ selectedTour, onClose }) {
       </button>
 
       {showForm && (
-        <div className="border p-4 rounded shadow-sm mb-4 bg-gray-50">
+        <div
+          className={classNames("border p-4 rounded shadow-sm mb-4", {
+            "bg-gray-50 ": !darkMode,
+            "dark:bg-gray-600": darkMode,
+          })}
+        >
           <div className="mb-2">
             <label className="block font-medium">Kommentar</label>
             <textarea
@@ -237,7 +254,7 @@ export default function TourEntries({ selectedTour, onClose }) {
                 ? "bg-green-600 hover:bg-green-700"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
-            onClick={handleAddEntry}
+            onClick={handleAddOrUpdateEntry}
           >
             {editingEntryId ? "Log aktualisieren" : "Log speichern"}
           </button>
@@ -266,10 +283,16 @@ export default function TourEntries({ selectedTour, onClose }) {
             return (
               <li
                 key={entry.id}
-                className="relative border p-3 rounded shadow-sm"
+                className={classNames("relative border p-3 rounded shadow-sm", {
+                  "text-white": !darkMode,
+                  "dark:text-white": darkMode,
+                })}
               >
                 <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+                  className={classNames("absolute top-2 right-2", {
+                    "text-gray-500 hover:text-red-600": !darkMode,
+                    "dark:text-black hover:text-red-600": darkMode,
+                  })}
                   onClick={() => {
                     setEntryToDelete(entry);
                     setShowDeleteModal(true);
@@ -278,7 +301,10 @@ export default function TourEntries({ selectedTour, onClose }) {
                   <Trash2 size={18} />
                 </button>
                 <button
-                  className="absolute bottom-2 right-2 text-gray-500 hover:text-blue-700"
+                  className={classNames("absolute bottom-2 right-2", {
+                    "text-gray-500 hover:text-blue-700": !darkMode,
+                    "dark:text-black hover:text-blue-700": darkMode,
+                  })}
                   onClick={() => handleEditClick(entry)}
                 >
                   <Pencil size={18} />
@@ -304,8 +330,21 @@ export default function TourEntries({ selectedTour, onClose }) {
         </ul>
       )}
       {showDeleteModal && entryToDelete && (
-        <div className="fixed inset-0 z-50 bg-gray-200 bg-opacity-80 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div
+          className={classNames(
+            "fixed inset-0 z-50 bg-opacity-80 backdrop-blur-sm flex items-center justify-center",
+            {
+              "bg-gray-200 text-black": !darkMode,
+              "dark:bg-gray-500 dark:text-black": darkMode,
+            }
+          )}
+        >
+          <div
+            className={classNames("p-6 rounded-lg shadow-lg w-96", {
+              "bg-white": !darkMode,
+              "dark:bg-gray-600": darkMode,
+            })}
+          >
             <h2 className="text-xl font-semibold mb-4">Tour löschen</h2>
             <p>
               Bist du sicher, dass du die Tour{" "}
