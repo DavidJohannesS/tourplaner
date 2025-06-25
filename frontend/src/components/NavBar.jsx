@@ -152,12 +152,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      className={classNames("flex justify-between items-center p-4", {
-        "bg-blue-300 text-black": !darkMode,
-        "bg-gray-800 text-white": darkMode,
-      })}
-    >
+ <nav
+  className={classNames("relative flex justify-between items-center p-4", {
+    "bg-blue-300 text-black": !darkMode,
+    "bg-gray-800 text-white": darkMode,
+  })}
+>
       {/* Left: Site name */}
       <a href="/" className="text-xl font-bold">
         Tourplaner
