@@ -284,7 +284,7 @@ export default function TourEntries({ selectedTour, onClose }) {
               <li
                 key={entry.id}
                 className={classNames("relative border p-3 rounded shadow-sm", {
-                  "text-white": !darkMode,
+                  "text-black": !darkMode,
                   "dark:text-white": darkMode,
                 })}
               >
