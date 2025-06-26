@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { vi, describe, beforeEach, it, expect } from "vitest";
 
 // Create a spy function that we can use in our useMap mock.
 let fitBoundsMock = vi.fn();

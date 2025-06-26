@@ -279,7 +279,6 @@ export default function TourEntries({ selectedTour, onClose }) {
                 hour12: false,
               }
             );
-
             return (
               <li
                 key={entry.id}
