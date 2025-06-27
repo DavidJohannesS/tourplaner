@@ -4,7 +4,7 @@ import axios from "axios";
 import { useDarkMode } from "../context/DarkModeContext";
 import classNames from "classnames";
 
-const API_BASE = "http://localhost:8080/api/tours";
+const API_BASE = "http://SaadSeidl-backend:8080/api/tours";
 
 export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
   const [start, setStart] = useState("");
