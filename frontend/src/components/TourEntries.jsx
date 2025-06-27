@@ -6,7 +6,7 @@ import { useDarkMode } from "../context/DarkModeContext";
 import axios from "axios";
 import classNames from "classnames";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "http://SaadSeidl-backend:8080/api";
 
 export default function TourEntries({ selectedTour, onClose }) {
   const [entries, setEntries] = useState([]);
@@ -78,13 +78,13 @@ export default function TourEntries({ selectedTour, onClose }) {
       if (editingEntryId) {
         // UPDATE
         await axios.put(
-          `http://localhost:8080/api/tour-entries/${editingEntryId}`,
+          `http://SaadSeidl-backend:8080/api/tour-entries/${editingEntryId}`,
           entryData
         );
       } else {
         // CREATE
         await axios.post(
-          `http://localhost:8080/api/tours/${selectedTour.id}/entries`,
+          `http://SaadSeidl-backend:8080/api/tours/${selectedTour.id}/entries`,
           entryData
         );
       }
@@ -108,7 +108,7 @@ export default function TourEntries({ selectedTour, onClose }) {
 
   const handleDeleteEntry = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/tour-entries/${id}`);
+      await axios.delete(`http://SaadSeidl-backend:8080/api/tour-entries/${id}`);
       reloadTour();
       setShowDeleteModal(false);
     } catch (err) {

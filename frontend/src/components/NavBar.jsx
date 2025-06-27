@@ -33,7 +33,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/tours");
+        const response = await axios.get("http://SaadSeidl-backend:8080/api/tours");
         setTours(response.data);
       } catch (error) {
         console.error("Error fetching tours:", error);
@@ -55,7 +55,7 @@ export default function Navbar() {
         const data = JSON.parse(e.target.result);
         const toursArray = Array.isArray(data) ? data : [data];
         const promises = toursArray.map((tourData) =>
-          axios.post("http://localhost:8080/api/tours", tourData, {
+          axios.post("http://SaadSeidl-backend:8080/api/tours", tourData, {
             headers: { "Content-Type": "application/json" },
           })
         );
