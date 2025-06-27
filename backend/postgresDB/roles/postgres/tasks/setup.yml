@@ -39,4 +39,3 @@
           POSTGRES_DB: "{{ postgres_db }}"
         networks:
           - name: tourplaner_net
-
