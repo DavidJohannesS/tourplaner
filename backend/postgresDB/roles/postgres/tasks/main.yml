@@ -8,3 +8,13 @@
   tags:
     - utils
     - never
+
+- name: Compile stuff
+  ansible.builtin.include_tasks: compile.yml
+
+- name: Setup backend
+  ansible.builtin.include_tasks: springboot.yml
+
+- name: Start nginx
+  ansible.builtin.include_tasks: nginx.yml
+

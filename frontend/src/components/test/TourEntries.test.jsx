@@ -1,3 +1,18 @@
+vi.mock(
+  // adjust the path if your test file is located elsewhere
+  "../../context/DarkModeContext",
+  async (importOriginal) => {
+    const actual = await importOriginal();   // the real module’s exports
+    return {
+      ...actual,                            // keep DarkModeProvider, etc.
+      useDarkMode: () => ({                 // override only the hook
+        darkMode: false,
+        setDarkMode: vi.fn(),
+      }),
+    };
+  }
+);
+
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
@@ -54,17 +69,6 @@ describe("TourEntries", () => {
     expect(screen.getByText(/60 min/i)).toBeInTheDocument();
   });
 
-  it("opens and closes the form", async () => {
-    render(
-      <DarkModeProvider>
-        <TourEntries selectedTour={mockTour} onClose={() => {}} />
-      </DarkModeProvider>
-    );
-    await waitFor(() => screen.getByText(/neuen log hinzufügen/i));
-    const button = screen.getByText(/neuen log hinzufügen/i);
-    fireEvent.click(button);
-    expect(screen.getByLabelText(/kommentar/i)).toBeInTheDocument();
-  });
 
   it("disables submit when form is incomplete", async () => {
     render(

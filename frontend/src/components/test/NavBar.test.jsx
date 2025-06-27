@@ -1,12 +1,18 @@
+vi.mock("../../context/DarkModeContext", () => ({
+  useDarkMode: () => ({
+    darkMode: false,
+    setDarkMode: vi.fn(),
+  }),
+}));
+
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Navbar from "../NavBar";
+import Navbar from "../NavBar";      // adjust casing if your file is named Navbar.jsx
 import axios from "axios";
 import { jsPDF } from "jspdf";
 
 // --- MOCKS --- //
 
-// Mock axios: we’ll use get and post mocks.
 vi.mock("axios");
 
 // Mock jsPDF.

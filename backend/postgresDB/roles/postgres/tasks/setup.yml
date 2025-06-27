@@ -4,6 +4,11 @@
     - setup
     - reset
   block:
+    - name: Create app network
+      community.docker.docker_network:
+        name: tourplaner_net
+        state: present
+
     - name: Pull img
       community.docker.docker_image:
         name: "{{ postgres_img }}"
@@ -14,6 +19,8 @@
       community.docker.docker_volume:
         name: "{{ postgres_volume }}"
         state: present
+    - debug:
+        msg: "{{ postgres_volume }}:/var/lib/postgresql/data"
 
     - name: Start container
       community.docker.docker_container:
@@ -23,15 +30,13 @@
         published_ports:
           - "{{ postgres_port }}:5432"
         volumes:
-          - "{{ postgres_volume }}:/var/lib/postgresql/data"
+          - source: "{{ postgres_volume }}"
+            target: /var/lib/postgresql/data
+            type: volume
         env:
           POSTGRES_USER: "{{ postgres_user }}"
           POSTGRES_PASSWORD: "{{ postgres_pwd }}"
           POSTGRES_DB: "{{ postgres_db }}"
+        networks:
+          - name: tourplaner_net
 
-    - name: Wait for init
-      ansible.builtin.wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ postgres_port }}"
-        delay: 10
-        timeout: 300

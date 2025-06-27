@@ -1,3 +1,9 @@
+vi.mock("../../context/DarkModeContext", () => ({
+  useDarkMode: () => ({
+    darkMode: false,
+    setDarkMode: vi.fn(),
+  }),
+}));
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import TourPreview from "../TourPreview";
 import { updateTour } from "../../api/tours";

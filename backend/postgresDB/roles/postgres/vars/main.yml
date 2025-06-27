@@ -10,3 +10,18 @@ postgres_volume: "tourplanerVolume"
 postgres_user: "postgres"
 postgres_pwd: "testpwd"
 postgres_db: "tourplaner"
+
+gitrepo_link: "https://github.com/DavidJohannesS/tourplaner.git"
+build_dir: "{{ role_path }}/files/gitrepo"
+
+nginx_img: "nginx"
+nginx_ver: "1.29"
+nginx_container: "SaadSeidl-tourplaner-nginx"
+nginx_port: "8082"
+nginx_dir: "/gitrepos/tourplaner.git/BRANCHES/master/frontend"
+
+springboot_img: "registry.access.redhat.com/ubi9/openjdk-21"
+springboot_ver: "1.22"
+springboot_container: "SaadSeidl-backend"
+springboot_port: "8080"
+springboot_dir: "{{ role_path }}/files/gitrepo/backend/springboot"

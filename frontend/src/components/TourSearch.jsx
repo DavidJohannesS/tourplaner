@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Trash2 } from "lucide-react"; //trash icon
+import { Trash2 } from "lucide-react";
 import axios from "axios";
 import { useDarkMode } from "../context/DarkModeContext";
 import classNames from "classnames";
@@ -38,7 +38,7 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
 
   const handleDeleteTour = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/tours/${id}`);
+      await axios.delete(`${API_BASE}/${id}`);
       setSavedTours((prev) => prev.filter((tour) => tour.id !== id));
       setShowDeleteModal(false);
     } catch (err) {
@@ -57,7 +57,7 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
     if (!searchedTour || !name || !description) return;
 
     const newTourDTO = {
-      id: 0, // Wird vom Backend ignoriert / überschrieben
+      id: 0, // ignored by backend
       name,
       description,
       fromLocation: searchedTour.start,
@@ -66,7 +66,7 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
       distance: String(searchedTour.distance),
       estimatedTime: String(searchedTour.estimatedTime),
       tourEntries: [],
-      searchVector: "", // wird serverseitig generiert/verwendet
+      searchVector: "",
     };
 
     try {
@@ -92,23 +92,29 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
       <h2 className="text-xl font-semibold mb-4">Tour suchen</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
-          <label className="text-sm font-medium">Startpunkt</label>
+          <label htmlFor="start-input" className="text-sm font-medium">
+            Startpunkt
+          </label>
           <input
+            id="start-input"
             type="text"
             value={start}
             onChange={(e) => setStart(e.target.value)}
             className="w-full border rounded p-2"
-            placeholder="z. B. Berlin"
+            placeholder="z. B. Berlin"
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Zielpunkt</label>
+          <label htmlFor="end-input" className="text-sm font-medium">
+            Zielpunkt
+          </label>
           <input
+            id="end-input"
             type="text"
             value={end}
             onChange={(e) => setEnd(e.target.value)}
             className="w-full border rounded p-2"
-            placeholder="z. B. Hamburg"
+            placeholder="z. B. Hamburg"
           />
         </div>
         <button
@@ -181,10 +187,9 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
             </button>
 
             <button
+              aria-label={`Lösche ${tour.name}`}
               onClick={() => {
-                // Schließe die tour entry
                 onSelectTour(null);
-
                 setTourToDelete(tour);
                 setShowDeleteModal(true);
               }}
@@ -220,13 +225,14 @@ export default function TourSearch({ onSearch, searchedTour, onSelectTour }) {
           </div>
         ))}
       </div>
+
       {showDeleteModal && tourToDelete && (
         <div
           className={classNames(
             "fixed inset-0 z-50 bg-opacity-80 backdrop-blur-sm flex items-center justify-center",
             {
               "bg-gray-200 text-black": !darkMode,
-              "dark:bg-gray-500 dark:text-black": darkMode,
+              "dark:bg-gray-500 dark:text-white": darkMode,
             }
           )}
         >

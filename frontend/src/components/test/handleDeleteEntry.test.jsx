@@ -1,7 +1,6 @@
-/// <reference types="vitest" />
 import { test, expect, vi } from 'vitest';
 import axios from 'axios';
-import TourEntries from '../components/TourEntries';
+import TourEntries from '../../components/TourEntries';
 
 vi.mock('axios');
 

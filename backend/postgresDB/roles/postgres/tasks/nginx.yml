@@ -1,0 +1,20 @@
+---
+- name: Setup nginx container
+  tags:
+    - setup
+  block:
+    - name: Pull img
+      community.docker.docker_image:
+        name: "{{ nginx_img }}"
+        tag: "{{ nginx_ver }}"
+        source: pull
+
+    - name: Start container
+      community.docker.docker_container:
+        name: "{{ nginx_container }}"
+        image: "{{ nginx_img }}"
+        state: started
+        published_ports:
+          - "8082:80"
+        volumes:
+          - "{{ nginx_dir }}/dist:/usr/share/nginx/html"
