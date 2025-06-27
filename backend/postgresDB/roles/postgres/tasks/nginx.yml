@@ -18,3 +18,5 @@
           - "8082:80"
         volumes:
           - "{{ nginx_dir }}/dist:/usr/share/nginx/html"
+        networks:
+          - name: tourplaner_net
